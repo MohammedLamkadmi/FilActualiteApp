@@ -4,11 +4,11 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
-import 'react-native-reanimated';
+import { Provider } from 'react-redux'; // Import du Provider Redux
+import { store } from '../store/store'; // Import du store Redux
+import { useColorScheme } from '../hooks/useColorScheme';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
+// Empêche l'écran de splash de se cacher avant que les polices soient chargées
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -28,12 +28,19 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <Provider store={store}>
+      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <Stack
+          screenOptions={{
+            headerShown: false, // Supprime l'en-tête si vous n'en voulez pas
+          }}
+        >
+          <Stack.Screen name="index" />
+          <Stack.Screen name="add" />
+          <Stack.Screen name="edit" />
+        </Stack>
+        <StatusBar style="auto" />
+      </ThemeProvider>
+    </Provider>
   );
 }
